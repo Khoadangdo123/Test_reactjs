@@ -1,29 +1,33 @@
-import './App.css'
-import { memo, useCallback, useState } from "react";
-import Header from './components/Header';
+import { useReducer } from 'react';
+import './App.css';
 
-const ChildButton = memo(({ onClick } : any) => {
-  console.log("Child Render");
-  return <button onClick={onClick}>Child Button</button>;
-});
+function reducer(state : any, action : any) {
+  console.log(state)
+  switch (action.type) {
+    case "increment":
+      return {age: state.age + 1};
+    case "descrement":
+      return {age: state.age - 1};
+    case "reset":
+      return {age: 0};
+    default:
+      return {age: state.age};
+  }
+}
+
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const handleChildClick = useCallback(() => {
-    console.log("Child clicked");
-  }, []);
+  
+  const [state, dispatch] = useReducer(reducer, { age: 0 })
 
   return (
     <div>
-      <h1>{count}</h1>
-
-      <button onClick={() => setCount(c => c + 1)}>
-        Parent Re-render
-      </button>
-
-      <ChildButton onClick={handleChildClick} />
+      <button onClick={() => { dispatch({ type: "increment" }) }}>increment</button>
+      <button onClick={() => { dispatch({ type: "descrement" }) }}>descrement</button>
+      <button onClick={() => { dispatch({ type: "reset" }) }}>reset</button>
+      <h1>{state.age}</h1>
     </div>
   );
 }
+
 export default App
